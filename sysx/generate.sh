@@ -7,6 +7,7 @@ mksyscall="$(go env GOROOT)/src/syscall/mksyscall.pl"
 fix() {
 	sed 's,^package syscall$,package sysx,' \
 		| sed 's,^import "unsafe"$,import (\n\t"syscall"\n\t"unsafe"\n),' \
+		| sed 's,^// +build.*,,' \
 		| gofmt -r='BytePtrFromString -> syscall.BytePtrFromString' \
 		| gofmt -r='Syscall6 -> syscall.Syscall6' \
 		| gofmt -r='Syscall -> syscall.Syscall' \
@@ -27,7 +28,7 @@ fi
 
 mkargs=""
 
-if [ "$GOARCH" == "386" ] || [ "$GOARCH" == "arm" ]; then
+if [ "$GOARCH" == "386" ] || [ "$GOARCH" == "arm" ] || [ "$GOARCH" == "mips" ]; then
 	mkargs="-l32"
 fi
 
